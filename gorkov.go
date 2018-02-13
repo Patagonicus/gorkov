@@ -62,3 +62,9 @@ func NewToken(t, value string) Token {
 func Literal(value string) Token {
 	return NewToken(LiteralType, value)
 }
+
+// TokensEqual checks two tokens for equality. Two tokens are considered
+// equal if their type and identifier match.
+func TokensEqual(a, b Token) bool {
+	return a.Type() == b.Type() && a.Identifier() == b.Identifier()
+}
