@@ -19,7 +19,10 @@ install:
   - dep ensure
   - go get -v github.com/onsi/ginkgo/ginkgo
   - go get -v github.com/onsi/gomega
+  - go get -v github.com/mattn/goveralls
 
 script:
-  - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
+  - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2
+  - ginkgo -r --randomizeAllSpecs -randomizeSuites --failOnPending --cover --covermode=count --trace --compilers=2
+  - test -n "$COVERALLS_TOKEN" && goveralls -coverprofile=gorkov.coverprofile -service=travis-ci -repotoken "$COVERALLS_TOKEN"
   - env PATH="gometalinter:gometalinter/linters:$PATH" gometalinter --config=.gometalinter.json .
