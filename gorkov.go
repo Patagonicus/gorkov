@@ -32,6 +32,11 @@ const (
 	LiteralType = "l"
 )
 
+var (
+	// End is a pseude token that ends a chain.
+	End = NewToken("e", "")
+)
+
 type token struct {
 	t, value string
 }
