@@ -40,6 +40,7 @@ var _ = Describe("Token", func() {
 		})
 	})
 
+	// nolint: dupl
 	Describe("Getting the identifier", func() {
 		It("should return the value", func() {
 			Expect(foo.Identifier()).To(Equal("foo"))
@@ -50,6 +51,7 @@ var _ = Describe("Token", func() {
 		})
 	})
 
+	// nolint: dupl
 	Describe("Getting the value", func() {
 		It("should return the value", func() {
 			Expect(foo.Value()).To(Equal("foo"))

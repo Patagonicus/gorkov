@@ -22,4 +22,4 @@ install:
 
 script:
   - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
-  - env PATH="gometalinter:gometalinter/linters:$PATH" gometalinter --config=.gometalinter.json ./...
+  - env PATH="gometalinter:gometalinter/linters:$PATH" gometalinter --config=.gometalinter.json .
