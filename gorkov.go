@@ -32,6 +32,11 @@ const (
 	LiteralType = "l"
 )
 
+var (
+	// End is a pseude token that ends a chain.
+	End = NewToken("e", "")
+)
+
 type token struct {
 	t, value string
 }
@@ -61,4 +66,10 @@ func NewToken(t, value string) Token {
 // and is equal to calling NewToken(LiteralType, value).
 func Literal(value string) Token {
 	return NewToken(LiteralType, value)
+}
+
+// TokensEqual checks two tokens for equality. Two tokens are considered
+// equal if their type and identifier match.
+func TokensEqual(a, b Token) bool {
+	return a.Type() == b.Type() && a.Identifier() == b.Identifier()
 }
