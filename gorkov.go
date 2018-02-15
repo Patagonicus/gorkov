@@ -28,7 +28,7 @@ type Token interface {
 }
 
 const (
-	// The type used for literal tokens.
+	// LiteralType is the type used for literal tokens.
 	LiteralType = "l"
 )
 

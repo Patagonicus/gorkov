@@ -4,15 +4,22 @@ go:
   - 1.9.x
 
 env:
-  - DEP_VERSION="0.3.2"
+  global:
+    - DEP_VERSION="0.3.2"
+    - LINTER_VERSION=2.0.4
 
 before_install:
   - curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
   - chmod +x $GOPATH/bin/dep
+  - curl -L -s "https://github.com/alecthomas/gometalinter/releases/download/v${LINTER_VERSION}/gometalinter-${LINTER_VERSION}-linux-amd64.tar.gz" -o gometalinter.tar.gz
+  - tar xf gometalinter.tar.gz
+  - mv "gometalinter-${LINTER_VERSION}-linux-amd64" "gometalinter"
 
 install:
   - dep ensure
   - go get -v github.com/onsi/ginkgo/ginkgo
   - go get -v github.com/onsi/gomega
 
-script: ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
+script:
+  - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
+  - env PATH="gometalinter:gometalinter/linters:$PATH" gometalinter --config=.gometalinter.json .
