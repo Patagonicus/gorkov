@@ -1,5 +1,10 @@
 package gorkov
 
+import (
+	"bytes"
+	"fmt"
+)
+
 // Token is an one element of a markov chain. Usually this is a word or some
 // whitespace.
 type Token interface {
@@ -33,6 +38,8 @@ const (
 )
 
 var (
+	// Start is a pseudo token that starts a chain.
+	Start = NewToken("s", "")
 	// End is a pseude token that ends a chain.
 	End = NewToken("e", "")
 )
@@ -72,4 +79,41 @@ func Literal(value string) Token {
 // equal if their type and identifier match.
 func TokensEqual(a, b Token) bool {
 	return a.Type() == b.Type() && a.Identifier() == b.Identifier()
+}
+
+// Prefix is slice of tokens. It is used when selecting the next token while
+// generating a new sequence.
+type Prefix []Token
+
+// NewPrefix returns a new prefix of the given length. It will consist only of
+// Start tokens. It will panic if a number <= 0 is given.
+func NewPrefix(n int) Prefix {
+	if n <= 0 {
+		panic(fmt.Errorf("invalid prefix length %d", n))
+	}
+	p := make(Prefix, n)
+	for i := range p {
+		p[i] = Start
+	}
+	return p
+}
+
+// PrefixKey is a string that identifies a prefix. It can be used as a key in
+// a map.
+type PrefixKey string
+
+// Key returns a string that can be used in a map to identfy this prefix.
+func (p Prefix) Key() PrefixKey {
+	buf := &bytes.Buffer{}
+	for _, t := range p {
+		fmt.Fprintf(buf, "\x00%s\x00%s", t.Type(), t.Identifier()) // nolint: gas
+	}
+	return PrefixKey(buf.String())
+}
+
+// Shift adds the given token to the end of the prefix and drops the first
+// token.
+func (p Prefix) Shift(t Token) {
+	copy(p, p[1:])
+	p[len(p)-1] = t
 }
