@@ -23,6 +23,6 @@ install:
 
 script:
   - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2
-  - ginkgo -r --randomizeAllSpecs -randomizeSuites --failOnPending --cover --covermode=count --trace --compilers=2
-  - test -n "$COVERALLS_TOKEN" && goveralls -coverprofile=gorkov.coverprofile -service=travis-ci -repotoken "$COVERALLS_TOKEN"
+    # the following line is adapted from https://github.com/pierrre/gotestcover
+  - "test -n \"$COVERALLS_TOKEN\" && echo 'mode: atomic' >gorkov.coverprofile && go list ./... | xargs -n1 -I'{}' sh -c 'go test -covermode=atomic -coverprofile=tmp.coverprofile {} && tail -n +2 tmp.coverprofile >>gorkov.coverprofile' && goveralls -coverprofile=gorkov.coverprofile -service=travis-ci -repotoken \"$COVERALLS_TOKEN\""
   - env PATH="gometalinter:gometalinter/linters:$PATH" gometalinter --config=.gometalinter.json .
